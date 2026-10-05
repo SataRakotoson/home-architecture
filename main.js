@@ -144,18 +144,79 @@ document.querySelectorAll(".facts article, .lead p, .compare, .project, .section
 
 document.querySelectorAll(".hero-media, .media, .project-preview, .compare-frame").forEach((el) => watch(el));
 
-document.querySelectorAll(".compare-frame").forEach((frame) => {
+document.querySelectorAll(".compare-frame").forEach((frame, index) => {
   const range = frame.querySelector(".compare-range");
+  const minPos = 8;
+  const maxPos = 92;
+  const goMs = 5600;
+  const holdMs = 1200;
+  const cycleMs = (goMs + holdMs) * 2;
+  const staggerMs = index * 1400;
+  let auto = false;
+  let raf = 0;
+  let origin = 0;
+  let resumeTimer = 0;
+  let inView = false;
+  let held = false;
 
   const setPos = (value) => {
     const next = Math.min(100, Math.max(0, Number(value)));
     frame.style.setProperty("--pos", `${next}%`);
-    if (range.value !== String(next)) range.value = String(next);
+    const rounded = String(Math.round(next));
+    if (range.value !== rounded) range.value = rounded;
   };
 
-  setPos(range.value);
+  const ease = (t) => 0.5 - 0.5 * Math.cos(Math.PI * Math.min(1, Math.max(0, t)));
 
-  range.addEventListener("input", () => setPos(range.value));
+  const autoPos = (now) => {
+    const t = ((now - origin + staggerMs) % cycleMs + cycleMs) % cycleMs;
+    if (t < goMs) return minPos + (maxPos - minPos) * ease(t / goMs);
+    if (t < goMs + holdMs) return maxPos;
+    if (t < goMs + holdMs + goMs) return maxPos - (maxPos - minPos) * ease((t - goMs - holdMs) / goMs);
+    return minPos;
+  };
+
+  const tick = (now) => {
+    if (!auto) return;
+    setPos(autoPos(now));
+    raf = requestAnimationFrame(tick);
+  };
+
+  const stopAuto = () => {
+    auto = false;
+    cancelAnimationFrame(raf);
+  };
+
+  const play = () => {
+    if (reduceMotion || !inView || auto || held) return;
+    auto = true;
+    origin = performance.now();
+    raf = requestAnimationFrame(tick);
+  };
+
+  const hold = () => {
+    held = true;
+    stopAuto();
+    window.clearTimeout(resumeTimer);
+  };
+
+  const scheduleResume = () => {
+    held = true;
+    stopAuto();
+    window.clearTimeout(resumeTimer);
+    resumeTimer = window.setTimeout(() => {
+      held = false;
+      play();
+    }, 3800);
+  };
+
+  setPos(reduceMotion ? range.value : minPos);
+
+  range.addEventListener("input", () => {
+    hold();
+    setPos(range.value);
+    scheduleResume();
+  });
 
   const posFromPointer = (event) => {
     const rect = frame.getBoundingClientRect();
@@ -165,6 +226,7 @@ document.querySelectorAll(".compare-frame").forEach((frame) => {
   frame.addEventListener("pointerdown", (event) => {
     if (event.pointerType === "mouse" && event.button !== 0) return;
     event.preventDefault();
+    hold();
     frame.setPointerCapture(event.pointerId);
     setPos(posFromPointer(event));
   });
@@ -173,6 +235,24 @@ document.querySelectorAll(".compare-frame").forEach((frame) => {
     if (!frame.hasPointerCapture(event.pointerId)) return;
     setPos(posFromPointer(event));
   });
+
+  frame.addEventListener("pointerup", scheduleResume);
+  frame.addEventListener("pointercancel", scheduleResume);
+
+  const updateView = () => {
+    const rect = frame.getBoundingClientRect();
+    const viewH = window.innerHeight || 1;
+    inView = rect.bottom > viewH * 0.12 && rect.top < viewH * 0.88;
+    if (inView) play();
+    else stopAuto();
+  };
+
+  if (!reduceMotion) {
+    new IntersectionObserver(updateView, { threshold: [0, 0.15, 0.4] }).observe(frame);
+    window.addEventListener("scroll", updateView, { passive: true });
+    window.addEventListener("resize", updateView);
+    requestAnimationFrame(updateView);
+  }
 });
 
 if (heroLogo) requestAnimationFrame(() => heroLogo.classList.add("is-shown"));
