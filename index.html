@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <script>document.documentElement.classList.add("js");</script>
   </head>
   <body>
     <a class="skip" href="#contenu">Aller au contenu</a>
@@ -30,7 +31,9 @@
 
     <main id="contenu">
       <section class="hero" id="haut">
-        <img src="images/p3.jpg" alt="Petite maison à charpente apparente, construite à Andasibe.">
+        <div class="hero-media">
+          <img class="parallax-img" data-parallax="scroll" data-speed="0.22" src="images/hero.webp" alt="Petite maison à charpente apparente, construite à Andasibe.">
+        </div>
         <p class="hero-logo">
           <img src="images/logo.png" alt="I-Trano, construire intelligemment">
         </p>
@@ -89,7 +92,9 @@
                 </span>
               </button>
               <p>La cuisine a été ouverte en partie, pour être vue depuis le séjour. L’intérieur change de visage.</p>
-              <img class="inline-photo" src="images/p1.jpg" alt="Ouverture d’une cuisine sur le séjour, à Ampandrianomby.">
+              <div class="media inline-photo">
+                <img class="parallax-img" data-parallax="shift" data-speed="0.14" src="images/p1.jpg" alt="Ouverture d’une cuisine sur le séjour, à Ampandrianomby.">
+              </div>
             </li>
 
             <li class="project">
@@ -102,7 +107,9 @@
                 </span>
               </button>
               <p>Le projet d’une grande maison a été développé dans son ensemble, du volume jusqu’à la façade.</p>
-              <img class="inline-photo" src="images/p2.jpg" alt="Projet d’une grande maison en bois, à Marolambo.">
+              <div class="media inline-photo">
+                <img class="parallax-img" data-parallax="shift" data-speed="0.14" src="images/p2.jpg" alt="Projet d’une grande maison en bois, à Marolambo.">
+              </div>
             </li>
 
             <li class="project">
@@ -115,7 +122,9 @@
                 </span>
               </button>
               <p>Une maison dite petite demande la même attention. L’élévation est étudiée, puis le chantier suit.</p>
-              <img class="inline-photo" src="images/p4.jpg" alt="Élévation d’une petite maison étudiée pour Andasibe.">
+              <div class="media inline-photo">
+                <img class="parallax-img" data-parallax="shift" data-speed="0.14" src="images/p4.jpg" alt="Élévation d’une petite maison étudiée pour Andasibe.">
+              </div>
             </li>
 
             <li class="project">
@@ -128,7 +137,9 @@
                 </span>
               </button>
               <p>Le travail ne se limite pas au neuf. Ici, une maison déjà là a été reprise : toiture, murs, façade.</p>
-              <img class="inline-photo" src="images/p5.jpg" alt="Maison existante reprise à Ampandrianomby, façade et toiture.">
+              <div class="media inline-photo">
+                <img class="parallax-img" data-parallax="shift" data-speed="0.14" src="images/p5.jpg" alt="Maison existante reprise à Ampandrianomby, façade et toiture.">
+              </div>
             </li>
 
             <li class="project">
@@ -141,12 +152,14 @@
                 </span>
               </button>
               <p>Le dessin et le chantier avancent ensemble. La maison est en construction.</p>
-              <img class="inline-photo" src="images/p8.jpg" alt="Maison en construction à Andasibe, travaux en cours.">
+              <div class="media inline-photo">
+                <img class="parallax-img" data-parallax="shift" data-speed="0.14" src="images/p8.jpg" alt="Maison en construction à Andasibe, travaux en cours.">
+              </div>
             </li>
           </ol>
 
           <figure class="project-preview">
-            <img src="images/p1.jpg" alt="Ouverture d’une cuisine sur le séjour, à Ampandrianomby.">
+            <img class="parallax-img" data-parallax="shift" data-speed="0.2" src="images/p1.jpg" alt="Ouverture d’une cuisine sur le séjour, à Ampandrianomby.">
           </figure>
         </div>
       </section>
@@ -161,13 +174,17 @@
             <p class="idx">01</p>
             <h3>Étudier</h3>
             <p>On commence par regarder. Même une petite maison appelle un dessin clair : la façade, l’usage, la manière d’entrer.</p>
-            <img src="images/p4.jpg" alt="Dessin de façade d’une petite maison.">
+            <div class="media">
+              <img class="parallax-img" data-parallax="shift" data-speed="0.18" src="images/p4.jpg" alt="Dessin de façade d’une petite maison.">
+            </div>
           </article>
           <article>
             <p class="idx">02</p>
             <h3>Réaliser</h3>
             <p>Ensuite le chantier. Construction neuve, ouverture d’une pièce, reprise d’une façade. Améliorer et rénover comptent autant que bâtir.</p>
-            <img src="images/p6.jpg" alt="Reprise d’une façade et d’une toiture sur une maison existante.">
+            <div class="media">
+              <img class="parallax-img" data-parallax="shift" data-speed="0.18" src="images/p6.jpg" alt="Reprise d’une façade et d’une toiture sur une maison existante.">
+            </div>
           </article>
         </div>
       </section>

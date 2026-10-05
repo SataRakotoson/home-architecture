@@ -114,12 +114,23 @@ h1, h2, h3, p {
   overflow: hidden;
 }
 
-.hero > img {
+.hero-media {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.hero-media img {
+  position: absolute;
+  left: 0;
+  top: -14%;
   width: 100%;
-  height: 100%;
+  height: 128%;
+  max-width: none;
   object-fit: cover;
   object-position: center 42%;
   display: block;
+  will-change: transform;
 }
 
 .hero::after {
@@ -322,8 +333,6 @@ h1, h2, h3, p {
 .inline-photo {
   display: none;
   width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
   margin-bottom: 1.25rem;
 }
 
@@ -337,10 +346,20 @@ h1, h2, h3, p {
 }
 
 .project-preview img {
+  position: absolute;
+  left: 0;
+  top: -12%;
   width: 100%;
-  height: 100%;
+  height: 124%;
+  max-width: none;
   object-fit: cover;
   display: block;
+  will-change: transform;
+  transition: opacity 0.45s ease;
+}
+
+.project-preview img.is-fading {
+  opacity: 0;
 }
 
 .approach {
@@ -367,11 +386,26 @@ h1, h2, h3, p {
   margin-bottom: 1.25rem;
 }
 
-.steps img {
-  width: 100%;
+.media {
+  position: relative;
+  overflow: hidden;
   aspect-ratio: 16 / 11;
+}
+
+.inline-photo.media {
+  aspect-ratio: 4 / 3;
+}
+
+.media img {
+  position: absolute;
+  left: 0;
+  top: -14%;
+  width: 100%;
+  height: 128%;
+  max-width: none;
   object-fit: cover;
   display: block;
+  will-change: transform;
 }
 
 .zones {
@@ -516,8 +550,91 @@ a:focus-visible {
   }
 }
 
+.mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  line-height: 0.96;
+  padding: 0.08em 0 0.14em;
+  margin-bottom: -0.08em;
+}
+
+.mask-inner {
+  display: inline-block;
+}
+
+.js .mask-inner,
+.js .rise,
+.js .hero-logo,
+.js .hero-media img,
+.js .media,
+.js .project-preview {
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.js .mask-inner {
+  transform: translateY(115%);
+  transition: transform 1.05s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.js .is-shown .mask-inner {
+  transform: translateY(0);
+}
+
+.js .rise {
+  opacity: 0;
+  transform: translateY(2.4rem);
+  transition: opacity 0.9s ease, transform 1.05s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.js .rise.is-shown {
+  opacity: 1;
+  transform: none;
+}
+
+.js .hero-logo {
+  opacity: 0;
+  transform: translateY(1.6rem);
+  transition: opacity 1s ease 0.25s, transform 1.15s cubic-bezier(0.16, 1, 0.3, 1) 0.25s;
+}
+
+.js .hero-logo.is-shown {
+  opacity: 1;
+  transform: none;
+}
+
+.js .media {
+  clip-path: inset(14% 0 14% 0);
+  transition: clip-path 1.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.js .media.is-shown {
+  clip-path: inset(0);
+}
+
+.js .project-preview {
+  clip-path: inset(8% 0 8% 0);
+  transition: clip-path 1.15s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.js .project-preview.is-shown {
+  clip-path: inset(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .js .mask-inner,
+  .js .rise,
+  .js .hero-logo,
+  .js .hero-media img,
+  .js .media,
+  .js .project-preview {
+    opacity: 1;
+    transform: none;
+    clip-path: none;
+    transition: none;
   }
 }
