@@ -3,7 +3,7 @@ const nav = document.querySelector(".site-nav");
 const toggle = document.querySelector(".nav-toggle");
 const menu = document.querySelector("#menu");
 const hero = document.querySelector(".hero");
-const heroLogo = document.querySelector(".hero-logo");
+const heroLogo = document.querySelector(".hero-title");
 const started = performance.now();
 
 const heroWatcher = new IntersectionObserver(
@@ -136,15 +136,46 @@ document.querySelectorAll(".zones li").forEach((el, index) => {
   watch(el);
 });
 
-document.querySelectorAll(".facts article, .lead p, .project, .section-kicker p, .steps article p, .footer-grid > div").forEach((el, index) => {
+document.querySelectorAll(".facts article, .lead p, .compare, .project, .section-kicker p, .steps article p, .footer-grid > div").forEach((el, index) => {
   el.classList.add("rise");
   el.style.transitionDelay = `${(index % 5) * 0.07}s`;
   watch(el);
 });
 
-document.querySelectorAll(".hero-media, .media, .project-preview").forEach((el) => watch(el));
+document.querySelectorAll(".hero-media, .media, .project-preview, .compare-frame").forEach((el) => watch(el));
 
-requestAnimationFrame(() => heroLogo.classList.add("is-shown"));
+document.querySelectorAll(".compare-frame").forEach((frame) => {
+  const range = frame.querySelector(".compare-range");
+
+  const setPos = (value) => {
+    const next = Math.min(100, Math.max(0, Number(value)));
+    frame.style.setProperty("--pos", `${next}%`);
+    if (range.value !== String(next)) range.value = String(next);
+  };
+
+  setPos(range.value);
+
+  range.addEventListener("input", () => setPos(range.value));
+
+  const posFromPointer = (event) => {
+    const rect = frame.getBoundingClientRect();
+    return ((event.clientX - rect.left) / rect.width) * 100;
+  };
+
+  frame.addEventListener("pointerdown", (event) => {
+    if (event.pointerType === "mouse" && event.button !== 0) return;
+    event.preventDefault();
+    frame.setPointerCapture(event.pointerId);
+    setPos(posFromPointer(event));
+  });
+
+  frame.addEventListener("pointermove", (event) => {
+    if (!frame.hasPointerCapture(event.pointerId)) return;
+    setPos(posFromPointer(event));
+  });
+});
+
+if (heroLogo) requestAnimationFrame(() => heroLogo.classList.add("is-shown"));
 
 function heroScale() {
   if (reduceMotion) return 1;
