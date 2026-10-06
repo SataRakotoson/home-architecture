@@ -318,6 +318,20 @@ function requestTick() {
 window.addEventListener("scroll", requestTick, { passive: true });
 window.addEventListener("resize", requestTick);
 updateParallax();
+
+if (typeof Lenis !== "undefined") {
+  const lenis = new Lenis({
+    autoRaf: true,
+    anchors: true,
+    allowNestedScroll: true,
+    stopInertiaOnNavigate: true,
+  });
+
+  lenis.on("scroll", () => {
+    updateNavVisibility();
+    requestTick();
+  });
+}
 if (!reduceMotion && heroScale() > 1.001) {
   const intro = () => {
     updateParallax();
