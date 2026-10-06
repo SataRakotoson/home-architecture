@@ -374,8 +374,8 @@ if (heroCanvas && hero && heroMedia) {
   let lastTime = 0;
 
   const frameSrc = (index) =>
-    // `images/hero-image/ezgif-frame-${String(index + 1).padStart(3, "0")}.jpg`;
-    `images/hero-image-2/ezgif-frame-${String(index + 1).padStart(3, "0")}.webp`;
+    `images/hero-image/ezgif-frame-${String(index + 1).padStart(3, "0")}.jpg`;
+    // `images/hero-image-2/ezgif-frame-${String(index + 1).padStart(3, "0")}.webp`;
 
   const loadFrame = (index) => {
     if (frames[index]) return frames[index];
