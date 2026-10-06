@@ -306,6 +306,9 @@ if (!reduceMotion && heroScale() > 1.001) {
 
 const heroCanvas = document.querySelector(".hero-sequence");
 const heroMedia = document.querySelector(".hero-media");
+const heroScroll = document.querySelector(".hero-scroll");
+const heroPin = document.querySelector(".hero-pin");
+const mobileHero = window.matchMedia("(max-width: 900px)");
 if (heroCanvas && hero && heroMedia) {
   const FRAME_COUNT = 151;
   const frames = new Array(FRAME_COUNT);
@@ -339,9 +342,12 @@ if (heroCanvas && hero && heroMedia) {
   };
 
   const sequenceProgress = () => {
-    const distance = hero.offsetHeight - heroMedia.offsetHeight;
+    const locked = mobileHero.matches && heroScroll && heroPin;
+    const track = locked ? heroScroll : hero;
+    const frame = locked ? heroPin : heroMedia;
+    const distance = track.offsetHeight - frame.offsetHeight;
     if (distance <= 1) return 0;
-    const scrolled = window.scrollY - hero.offsetTop;
+    const scrolled = window.scrollY - track.offsetTop;
     return Math.min(1, Math.max(0, scrolled / distance));
   };
 

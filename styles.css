@@ -106,6 +106,11 @@ h1, h2, h3, p {
   cursor: pointer;
 }
 
+.hero-scroll,
+.hero-pin {
+  display: contents;
+}
+
 .hero {
   --hero-frame: max(100svh, 36rem);
   --hero-run: 260vh;
@@ -654,6 +659,10 @@ a:focus-visible {
 }
 
 @media (max-width: 900px) {
+  .hero-mark {
+    width: min(5.5rem, 28vw);
+  }
+
   .nav-toggle {
     display: block;
   }
@@ -728,6 +737,46 @@ a:focus-visible {
 
   .zones ul {
     gap: 0.35rem;
+  }
+
+  .hero-scroll {
+    display: block;
+    --mobile-run: 200vh;
+    height: calc(100svh + var(--mobile-run));
+  }
+
+  .hero-pin {
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    max-height: 100svh;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .hero {
+    --hero-frame: 43svh;
+    --hero-run: 0px;
+    flex: 0 0 43svh;
+    height: 43svh;
+  }
+
+  .hero-media {
+    position: relative;
+    height: 43svh;
+  }
+
+  .hero-pin .manifesto {
+    flex: 1 1 auto;
+    min-height: 0;
+    align-content: start;
+    align-items: start;
+    gap: clamp(1rem, 3vh, 1.8rem);
+    padding-top: clamp(1.15rem, 3.2vh, 1.8rem);
+    padding-bottom: clamp(1rem, 2.5vh, 1.5rem);
+    overflow: auto;
   }
 }
 
@@ -832,5 +881,23 @@ a:focus-visible {
     transform: none;
     clip-path: none;
     transition: none;
+  }
+}
+
+@media (max-width: 900px) and (prefers-reduced-motion: reduce) {
+  .hero-scroll {
+    height: auto;
+  }
+
+  .hero-pin {
+    position: static;
+    display: block;
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .hero-pin .manifesto {
+    overflow: visible;
   }
 }
