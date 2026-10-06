@@ -303,3 +303,87 @@ if (!reduceMotion && heroScale() > 1.001) {
   };
   requestAnimationFrame(intro);
 }
+
+const heroCanvas = document.querySelector(".hero-sequence");
+const heroMedia = document.querySelector(".hero-media");
+if (heroCanvas && hero && heroMedia) {
+  const FRAME_COUNT = 151;
+  const frames = new Array(FRAME_COUNT);
+  const ctx = heroCanvas.getContext("2d", { alpha: false });
+  let current = 0;
+  let drawn = -1;
+  let lastTime = 0;
+
+  const frameSrc = (index) =>
+    `images/hero-image/ezgif-frame-${String(index + 1).padStart(3, "0")}.jpg`;
+
+  const loadFrame = (index) => {
+    if (frames[index]) return frames[index];
+    const img = new Image();
+    img.decoding = "async";
+    img.src = frameSrc(index);
+    frames[index] = img;
+    return img;
+  };
+
+  const isReady = (img) => img && img.complete && img.naturalWidth > 0;
+
+  const nearestReady = (index) => {
+    const img = frames[index];
+    if (isReady(img)) return index;
+    for (let step = 1; step < FRAME_COUNT; step++) {
+      if (index - step >= 0 && isReady(frames[index - step])) return index - step;
+      if (index + step < FRAME_COUNT && isReady(frames[index + step])) return index + step;
+    }
+    return -1;
+  };
+
+  const sequenceProgress = () => {
+    const distance = hero.offsetHeight - heroMedia.offsetHeight;
+    if (distance <= 1) return 0;
+    const scrolled = window.scrollY - hero.offsetTop;
+    return Math.min(1, Math.max(0, scrolled / distance));
+  };
+
+  const fitCanvas = () => {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const rect = heroCanvas.getBoundingClientRect();
+    const width = Math.max(1, Math.round(rect.width * dpr));
+    const height = Math.max(1, Math.round(rect.height * dpr));
+    if (heroCanvas.width !== width || heroCanvas.height !== height) {
+      heroCanvas.width = width;
+      heroCanvas.height = height;
+      drawn = -1;
+    }
+  };
+
+  const paint = (index) => {
+    const img = frames[index];
+    if (!isReady(img) || !ctx) return;
+    const width = heroCanvas.width;
+    const height = heroCanvas.height;
+    const scale = Math.max(width / img.naturalWidth, height / img.naturalHeight);
+    const dw = img.naturalWidth * scale;
+    const dh = img.naturalHeight * scale;
+    ctx.drawImage(img, (width - dw) / 2, (height - dh) / 2, dw, dh);
+    drawn = index;
+  };
+
+  for (let i = 0; i < FRAME_COUNT; i++) loadFrame(i);
+
+  const playSequence = (now) => {
+    const dt = lastTime ? Math.min(0.05, (now - lastTime) / 1000) : 0.016;
+    lastTime = now;
+    const target = reduceMotion ? 0 : sequenceProgress() * (FRAME_COUNT - 1);
+    const ease = 1 - Math.exp(-dt * 14);
+    current += (target - current) * ease;
+    if (Math.abs(target - current) < 0.04) current = target;
+
+    fitCanvas();
+    const index = nearestReady(Math.round(current));
+    if (index !== -1 && index !== drawn) paint(index);
+    requestAnimationFrame(playSequence);
+  };
+
+  requestAnimationFrame(playSequence);
+}
