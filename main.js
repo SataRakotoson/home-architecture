@@ -4,7 +4,8 @@ const toggle = document.querySelector(".nav-toggle");
 const menu = document.querySelector("#menu");
 const hero = document.querySelector(".hero");
 const heroLogo = document.querySelector(".hero-title");
-const started = performance.now();
+let started = performance.now();
+let lenis = null;
 
 const heroWatcher = new IntersectionObserver(
   ([entry]) => {
@@ -320,24 +321,43 @@ window.addEventListener("resize", requestTick);
 updateParallax();
 
 if (typeof Lenis !== "undefined") {
-  const lenis = new Lenis({
+  lenis = new Lenis({
     autoRaf: true,
     anchors: true,
     allowNestedScroll: true,
     stopInertiaOnNavigate: true,
   });
+  lenis.stop();
 
   lenis.on("scroll", () => {
     updateNavVisibility();
     requestTick();
   });
 }
-if (!reduceMotion && heroScale() > 1.001) {
+
+function startHeroIntro() {
+  started = performance.now();
+  if (reduceMotion || heroScale() <= 1.001) return;
   const intro = () => {
     updateParallax();
     if (heroScale() > 1.001) requestAnimationFrame(intro);
   };
   requestAnimationFrame(intro);
+}
+
+const loader = document.querySelector(".page-loader");
+const loaderBar = document.querySelector(".page-loader-bar");
+
+function setLoadProgress(ratio) {
+  if (!loaderBar) return;
+  loaderBar.style.width = `${Math.round(ratio * 100)}%`;
+}
+
+function revealPage() {
+  document.documentElement.classList.remove("is-loading");
+  if (loader) loader.setAttribute("aria-busy", "false");
+  if (lenis) lenis.start();
+  startHeroIntro();
 }
 
 const heroCanvas = document.querySelector(".hero-sequence");
@@ -354,7 +374,8 @@ if (heroCanvas && hero && heroMedia) {
   let lastTime = 0;
 
   const frameSrc = (index) =>
-    `images/hero-image/ezgif-frame-${String(index + 1).padStart(3, "0")}.jpg`;
+    // `images/hero-image/ezgif-frame-${String(index + 1).padStart(3, "0")}.jpg`;
+    `images/hero-image-2/ezgif-frame-${String(index + 1).padStart(3, "0")}.webp`;
 
   const loadFrame = (index) => {
     if (frames[index]) return frames[index];
@@ -364,6 +385,22 @@ if (heroCanvas && hero && heroMedia) {
     frames[index] = img;
     return img;
   };
+
+  const whenFrameReady = (img) => new Promise((resolve) => {
+    const finish = () => {
+      if (img.decode && img.naturalWidth > 0) {
+        img.decode().then(resolve).catch(resolve);
+        return;
+      }
+      resolve();
+    };
+    if (img.complete) {
+      finish();
+      return;
+    }
+    img.addEventListener("load", finish, { once: true });
+    img.addEventListener("error", finish, { once: true });
+  });
 
   const isReady = (img) => img && img.complete && img.naturalWidth > 0;
 
@@ -411,7 +448,14 @@ if (heroCanvas && hero && heroMedia) {
     drawn = index;
   };
 
-  for (let i = 0; i < FRAME_COUNT; i++) loadFrame(i);
+  let settled = 0;
+  const pending = [];
+  for (let i = 0; i < FRAME_COUNT; i++) {
+    pending.push(whenFrameReady(loadFrame(i)).then(() => {
+      settled += 1;
+      setLoadProgress(settled / FRAME_COUNT);
+    }));
+  }
 
   const playSequence = (now) => {
     const dt = lastTime ? Math.min(0.05, (now - lastTime) / 1000) : 0.016;
@@ -427,5 +471,13 @@ if (heroCanvas && hero && heroMedia) {
     requestAnimationFrame(playSequence);
   };
 
-  requestAnimationFrame(playSequence);
+  Promise.all(pending).then(() => {
+    fitCanvas();
+    const index = nearestReady(0);
+    if (index !== -1) paint(index);
+    revealPage();
+    requestAnimationFrame(playSequence);
+  });
+} else {
+  revealPage();
 }
