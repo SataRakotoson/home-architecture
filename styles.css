@@ -72,6 +72,35 @@ h1, h2, h3, p {
   min-height: var(--nav);
   padding: 0 var(--pad);
   pointer-events: none;
+  transform: translateY(0);
+  visibility: visible;
+  transition:
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    visibility 0s;
+}
+
+.site-nav.is-hidden {
+  transform: translateY(-110%);
+  visibility: hidden;
+  transition:
+    transform 0.45s cubic-bezier(0.4, 0, 1, 1),
+    visibility 0s linear 0.45s;
+}
+
+.site-nav.is-hidden a,
+.site-nav.is-hidden .nav-toggle {
+  pointer-events: none;
+}
+
+body.nav-open .site-nav.is-hidden {
+  transform: none;
+  visibility: visible;
+  transition: none;
+}
+
+body.nav-open .site-nav.is-hidden a,
+body.nav-open .site-nav.is-hidden .nav-toggle {
+  pointer-events: auto;
 }
 
 .site-nav a,
@@ -97,13 +126,23 @@ h1, h2, h3, p {
 
 .nav-toggle {
   display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
   background: none;
   border: 0;
-  padding: 0.4rem 0;
-  font: inherit;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  padding: 0;
+  color: inherit;
   cursor: pointer;
+}
+
+.nav-icon {
+  display: block;
+}
+
+.nav-icon-close {
+  display: none;
 }
 
 .hero-scroll,
@@ -664,7 +703,7 @@ a:focus-visible {
   }
 
   .nav-toggle {
-    display: block;
+    display: flex;
   }
 
   .site-nav nav {
@@ -700,6 +739,14 @@ a:focus-visible {
   body.nav-open .nav-toggle {
     position: relative;
     z-index: 21;
+  }
+
+  body.nav-open .nav-icon-open {
+    display: none;
+  }
+
+  body.nav-open .nav-icon-close {
+    display: block;
   }
 
   .manifesto,
@@ -864,6 +911,11 @@ a:focus-visible {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .site-nav,
+  .site-nav.is-hidden {
+    transition: none;
   }
 
   .hero {

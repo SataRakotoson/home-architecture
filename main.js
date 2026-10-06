@@ -16,7 +16,7 @@ heroWatcher.observe(hero);
 
 function setMenu(open) {
   toggle.setAttribute("aria-expanded", String(open));
-  toggle.textContent = open ? "Fermer" : "Menu";
+  toggle.setAttribute("aria-label", open ? "Fermer" : "Menu");
   document.body.classList.toggle("nav-open", open);
 }
 
@@ -32,6 +32,28 @@ toggle.addEventListener("click", () => {
 menu.querySelectorAll("a").forEach((link) => {
   link.addEventListener("click", closeMenu);
 });
+
+let lastScrollY = window.scrollY;
+const navRevealTop = 12;
+
+function updateNavVisibility() {
+  const y = window.scrollY;
+  const delta = y - lastScrollY;
+  const menuOpen = document.body.classList.contains("nav-open");
+
+  if (y <= navRevealTop || menuOpen) {
+    nav.classList.remove("is-hidden");
+    lastScrollY = y;
+    return;
+  }
+
+  if (Math.abs(delta) < 6) return;
+
+  nav.classList.toggle("is-hidden", delta > 0);
+  lastScrollY = y;
+}
+
+window.addEventListener("scroll", updateNavVisibility, { passive: true });
 
 const projects = [...document.querySelectorAll(".project")];
 const preview = document.querySelector(".project-preview img");
