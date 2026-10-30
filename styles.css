@@ -190,13 +190,14 @@ body.nav-open .site-nav.is-hidden .nav-toggle {
   z-index: 2;
   top: 1.15rem;
   left: var(--pad);
-  width: min(8.5rem, 36vw);
-}
-
-.hero-mark img {
-  display: block;
-  width: 100%;
-  height: auto;
+  width: auto;
+  color: #fff;
+  font-weight: 500;
+  font-size: clamp(1.35rem, 2.2vw, 1.85rem);
+  letter-spacing: -0.045em;
+  line-height: 1;
+  text-decoration: none;
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.45);
 }
 
 .hero-title {
@@ -244,7 +245,7 @@ body.nav-open .site-nav.is-hidden .nav-toggle {
   font-weight: 500;
   letter-spacing: -0.048em;
   line-height: 0.88;
-  max-width: 11ch;
+  max-width: 12ch;
 }
 
 .capabilities {
@@ -645,7 +646,7 @@ body.nav-open .site-nav.is-hidden .nav-toggle {
 .zones ul {
   list-style: none;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 1rem;
   margin: 1.5rem 0 0;
   padding: 0;
@@ -703,7 +704,8 @@ a:focus-visible {
 
 @media (max-width: 900px) {
   .hero-mark {
-    width: min(5.5rem, 28vw);
+    width: auto;
+    font-size: 1.35rem;
   }
 
   .nav-toggle {
@@ -933,8 +935,12 @@ html:not(.is-loading) .page-loader {
 }
 
 .page-loader-logo {
-  width: min(8.5rem, 36vw);
-  height: auto;
+  width: auto;
+  margin: 0;
+  font-size: clamp(2.6rem, 7vw, 4.2rem);
+  font-weight: 500;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
 }
 
 .page-loader-label {
