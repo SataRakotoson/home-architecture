@@ -569,19 +569,19 @@ body.nav-open .site-nav.is-hidden .nav-toggle {
   position: sticky;
   top: 5rem;
   margin: 0;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 2 / 3;
   background: #e7e4de;
   overflow: hidden;
 }
 
 .project-preview img {
   position: absolute;
-  left: 0;
-  top: -12%;
+  inset: 0;
   width: 100%;
-  height: 124%;
+  height: 100%;
   max-width: none;
   object-fit: cover;
+  object-position: center;
   display: block;
   will-change: transform;
   transition: opacity 0.45s ease;
@@ -622,7 +622,8 @@ body.nav-open .site-nav.is-hidden .nav-toggle {
 }
 
 .inline-photo.media {
-  aspect-ratio: 4 / 3;
+  aspect-ratio: 2 / 3;
+  background: #e7e4de;
 }
 
 .media img {
@@ -635,6 +636,13 @@ body.nav-open .site-nav.is-hidden .nav-toggle {
   object-fit: cover;
   display: block;
   will-change: transform;
+}
+
+.inline-photo img {
+  top: 0;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
 }
 
 .zones {
