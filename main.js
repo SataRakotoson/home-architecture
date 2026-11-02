@@ -94,21 +94,30 @@ projects.forEach((project) => {
 });
 
 function maskWords(el, step = 0.07) {
-  const text = el.textContent.replace(/\s+/g, " ").trim();
+  const lines = el.innerHTML
+    .split(/<br\s*\/?>/i)
+    .map((part) => part.replace(/<[^>]+>/g, "").replace(/\s+/g, " ").trim())
+    .filter(Boolean);
+  const text = lines.join(" ");
   if (!text) return;
-  const words = text.split(" ");
   el.setAttribute("aria-label", text);
   el.textContent = "";
-  words.forEach((word, index) => {
-    const mask = document.createElement("span");
-    mask.className = "mask";
-    const inner = document.createElement("span");
-    inner.className = "mask-inner";
-    inner.style.transitionDelay = `${index * step}s`;
-    inner.textContent = word;
-    mask.appendChild(inner);
-    el.appendChild(mask);
-    if (index < words.length - 1) el.appendChild(document.createTextNode(" "));
+  let index = 0;
+  lines.forEach((line, lineIndex) => {
+    if (lineIndex > 0) el.appendChild(document.createElement("br"));
+    const words = line.split(" ");
+    words.forEach((word, wordIndex) => {
+      const mask = document.createElement("span");
+      mask.className = "mask";
+      const inner = document.createElement("span");
+      inner.className = "mask-inner";
+      inner.style.transitionDelay = `${index * step}s`;
+      inner.textContent = word;
+      mask.appendChild(inner);
+      el.appendChild(mask);
+      if (wordIndex < words.length - 1) el.appendChild(document.createTextNode(" "));
+      index += 1;
+    });
   });
 }
 
@@ -366,7 +375,7 @@ const heroScroll = document.querySelector(".hero-scroll");
 const heroPin = document.querySelector(".hero-pin");
 const mobileHero = window.matchMedia("(max-width: 900px)");
 if (heroCanvas && hero && heroMedia) {
-  const FRAME_COUNT = 151;
+  const FRAME_COUNT = 100;
   const frames = new Array(FRAME_COUNT);
   const ctx = heroCanvas.getContext("2d", { alpha: false });
   let current = 0;
@@ -374,8 +383,7 @@ if (heroCanvas && hero && heroMedia) {
   let lastTime = 0;
 
   const frameSrc = (index) =>
-    `images/hero-image/ezgif-frame-${String(index + 1).padStart(3, "0")}.jpg`;
-    // `images/hero-image-2/ezgif-frame-${String(index + 1).padStart(3, "0")}.webp`;
+    `images/hero-image-andry/frame_${String(index).padStart(2, "0")}.webp`;
 
   const loadFrame = (index) => {
     if (frames[index]) return frames[index];
